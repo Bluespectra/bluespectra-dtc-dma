@@ -23,7 +23,7 @@ class AuthController extends Controller
             $user = Auth::user();
             if ($user->role_id == 1) {
                 return redirect()->route('dashboard');
-            } elseif ($user->role_id == 2) {
+            } elseif (in_array($user->role_id, [2, 3, 4])) {
                 return redirect()->route('dsp');
             }
         }
@@ -36,6 +36,4 @@ class AuthController extends Controller
         Auth::logout();
         return redirect()->route('login');
     }
-    
-
 }

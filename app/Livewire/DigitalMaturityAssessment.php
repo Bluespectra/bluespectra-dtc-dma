@@ -19,6 +19,7 @@ class DigitalMaturityAssessment extends Component
     public $answers = [];
     public $showResults = false;
     public $digitalAdvisorName = '';
+    public $accountRole = '';
     public $sections = [];
     public $sectionNames = [];
     public $isSaving = false;
@@ -27,15 +28,17 @@ class DigitalMaturityAssessment extends Component
     public $personalInfo = [
         'respondent_name' => '',
         'gender' => '',
+        'migration_status' => '',
         'phone_number_1' => '',
         'phone_number_2' => '',
         'email' => '',
         'state' => '',
         'has_disability' => false,
         'digital_advisor' => '',
+        'account_role' => '',
         'consent_given' => false,
     ];
-    
+
     // Business Information
     public $businessInfo = [
         'business_name' => '',
@@ -56,6 +59,7 @@ class DigitalMaturityAssessment extends Component
         // Personal Information Validation
         'personalInfo.respondent_name' => 'required',
         'personalInfo.gender' => 'required',
+        'personalInfo.migration_status' => 'required',
         'personalInfo.phone_number_1' => 'required',
         'personalInfo.phone_number_2' => 'required',
         'personalInfo.email' => 'required|email',
@@ -82,6 +86,7 @@ class DigitalMaturityAssessment extends Component
         // Personal Information Messages
         'personalInfo.respondent_name.required' => 'Please enter your name',
         'personalInfo.gender.required' => 'Please select your gender',
+        'personalInfo.migration_status.required' => 'Please select your migration status',
         'personalInfo.phone_number_1.required' => 'Please enter your primary phone number',
         'personalInfo.phone_number_2.required' => 'Please enter your secondary phone number',
         'personalInfo.email.required' => 'Please enter your email address',
@@ -125,11 +130,43 @@ class DigitalMaturityAssessment extends Component
 
     // Nigerian states
     public $states = [
-        'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa', 'Benue', 'Borno',
-        'Cross River', 'Delta', 'Ebonyi', 'Edo', 'Ekiti', 'Enugu', 'FCT', 'Gombe', 'Imo',
-        'Jigawa', 'Kaduna', 'Kano', 'Katsina', 'Kebbi', 'Kogi', 'Kwara', 'Lagos', 'Nasarawa',
-        'Niger', 'Ogun', 'Ondo', 'Osun', 'Oyo', 'Plateau', 'Rivers', 'Sokoto', 'Taraba',
-        'Yobe', 'Zamfara'
+        'Abia',
+        'Adamawa',
+        'Akwa Ibom',
+        'Anambra',
+        'Bauchi',
+        'Bayelsa',
+        'Benue',
+        'Borno',
+        'Cross River',
+        'Delta',
+        'Ebonyi',
+        'Edo',
+        'Ekiti',
+        'Enugu',
+        'FCT',
+        'Gombe',
+        'Imo',
+        'Jigawa',
+        'Kaduna',
+        'Kano',
+        'Katsina',
+        'Kebbi',
+        'Kogi',
+        'Kwara',
+        'Lagos',
+        'Nasarawa',
+        'Niger',
+        'Ogun',
+        'Ondo',
+        'Osun',
+        'Oyo',
+        'Plateau',
+        'Rivers',
+        'Sokoto',
+        'Taraba',
+        'Yobe',
+        'Zamfara'
     ];
 
     protected $sectionWeights = [
@@ -321,21 +358,23 @@ class DigitalMaturityAssessment extends Component
         // Set digital advisor if user is logged in
         if (Auth::check()) {
             $this->personalInfo['digital_advisor'] = Auth::id();
+            $this->accountRole = Auth::user()->role->name ?? 'Unknown';
+            $this->personalInfo['account_role'] = $this->accountRole;
             $this->digitalAdvisorName = Auth::user()->name;
         }
 
         // Load sections and questions from database
-        $sections = AssessmentSection::ordered()->with(['questions' => function($query) {
+        $sections = AssessmentSection::ordered()->with(['questions' => function ($query) {
             $query->ordered();
         }])->get();
-        
+
         // Group questions by section
         foreach ($sections as $section) {
             $this->sections[$section->name] = [
                 'description' => $section->description,
                 'weight' => $section->weight,
                 'scaling_factor' => $section->scaling_factor,
-                'questions' => $section->questions->map(function($question) {
+                'questions' => $section->questions->map(function ($question) {
                     return [
                         'id' => 'question_' . $question->id,
                         'type' => $question->type,
@@ -380,6 +419,7 @@ class DigitalMaturityAssessment extends Component
                 // Personal Information
                 'respondent_name' => $this->personalInfo['respondent_name'],
                 'gender' => $this->personalInfo['gender'],
+                'migration_status' => $this->personalInfo['migration_status'],
                 'phone_number_1' => $this->personalInfo['phone_number_1'],
                 'phone_number_2' => $this->personalInfo['phone_number_2'],
                 'email' => $this->personalInfo['email'],

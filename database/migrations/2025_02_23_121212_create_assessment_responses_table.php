@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('assessment_responses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable();
-            
+
             // Personal Information
             $table->string('respondent_name');
             $table->string('gender');
@@ -35,6 +35,7 @@ return new class extends Migration
             $table->integer('years_in_business');
             $table->string('staff_size');
             $table->string('digital_advisor')->nullable();
+            $table->string('account_role')->nullable();
             $table->boolean('has_disability')->default(false);
             $table->boolean('consent_given')->default(false);
             $table->boolean('multiple_states')->default(false);
@@ -45,7 +46,7 @@ return new class extends Migration
             $table->json('section_scores');
             $table->integer('overall_score');
             $table->string('maturity_level');
-            
+
             $table->timestamps();
         });
     }

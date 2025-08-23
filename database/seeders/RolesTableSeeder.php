@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder; 
+use Illuminate\Database\Seeder;
 use App\Models\Role;
 
 class RolesTableSeeder extends Seeder
@@ -21,9 +21,21 @@ class RolesTableSeeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'name' => 'DSP',
+                'name' => 'DSP (SMEDAN)',
                 'slug' => 'dsp',
                 'description' => 'DSP role',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'DTC (DC)',
+                'slug' => 'dtc',
+                'description' => 'DTC role',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'USER (Self)',
+                'slug' => 'user',
+                'description' => 'User role',
                 'is_active' => true,
             ],
         ];

@@ -21,6 +21,46 @@ class ManageUser extends Component
     public $phone;
     public $state;
     public $email_verified_at;
+    public $roles;
+    public $states = [
+        "Abia",
+        "Adamawa",
+        "Akwa Ibom",
+        "Anambra",
+        "Bauchi",
+        "Bayelsa",
+        "Benue",
+        "Borno",
+        "Cross River",
+        "Delta",
+        "Ebonyi",
+        "Edo",
+        "Ekiti",
+        "Enugu",
+        "FCT",
+        "Gombe",
+        "Imo",
+        "Jigawa",
+        "Kaduna",
+        "Kano",
+        "Katsina",
+        "Kebbi",
+        "Kogi",
+        "Kwara",
+        "Lagos",
+        "Nasarawa",
+        "Niger",
+        "Ogun",
+        "Ondo",
+        "Osun",
+        "Oyo",
+        "Plateau",
+        "Rivers",
+        "Sokoto",
+        "Taraba",
+        "Yobe",
+        "Zamfara"
+    ];
 
     protected $rules = [
         'name' => 'required|min:3',
@@ -34,13 +74,14 @@ class ManageUser extends Component
 
     public function mount()
     {
-        $this->role_id = Role::where('slug', 'dsp')->first()->id;
+        $this->roles = Role::all();
+        // $this->role_id = Role::where('slug', 'dsp')->first()->id;
         $this->resetForm();
     }
 
     public function resetForm()
     {
-        $this->reset(['name', 'email', 'password', 'is_active', 'phone', 'state']);
+        $this->reset(['name', 'email', 'role_id', 'password', 'is_active', 'phone', 'state']);
         $this->editingUserId = null;
     }
 
@@ -58,7 +99,7 @@ class ManageUser extends Component
             'state' => $this->state
         ]);
 
-        $this->reset(['name', 'email', 'password', 'is_active', 'phone', 'state']);
+        $this->reset(['name', 'email', 'password', 'role_id', 'is_active', 'phone', 'state']);
         session()->flash('message', 'DSP account created successfully.');
     }
 
@@ -119,10 +160,14 @@ class ManageUser extends Component
 
     public function render()
     {
-        $users = User::where('role_id', Role::where('slug', 'dsp')->first()->id)
+        $roleIds = Role::whereIn('slug', ['dsp', 'dtc', 'user'])->pluck('id');
+
+        $users = User::whereIn('role_id', $roleIds)
             ->when($this->search, function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('email', 'like', '%' . $this->search . '%');
+                $query->where(function ($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%')
+                        ->orWhere('email', 'like', '%' . $this->search . '%');
+                });
             })
             ->paginate(10);
 

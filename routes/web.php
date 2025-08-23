@@ -37,8 +37,8 @@ Route::middleware(['auth', \App\Http\Middleware\CheckRole::class . ':1'])->group
     Route::get('/assessments', [DashboardController::class, 'assessments'])->name('assessments');
 });
 
-// DSP routes (role_id = 2)
-Route::middleware(['auth', \App\Http\Middleware\CheckRole::class . ':2'])->group(function () {
+// DSP routes (role_id = 2,3,4)
+Route::middleware(['auth', \App\Http\Middleware\CheckRole::class . ':2,3,4'])->group(function () {
     Route::get('/dsp', [DspController::class, 'index'])->name('dsp');
     Route::get('/new-assessments', [DspController::class, 'newAssessments'])->name('new-assessments');
     Route::get('/dsp-assessments', [DspController::class, 'dspAssessments'])->name('dsp-assessments');
@@ -50,6 +50,3 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
 });
-
-
-
