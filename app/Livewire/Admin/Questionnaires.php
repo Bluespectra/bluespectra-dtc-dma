@@ -29,15 +29,15 @@ class Questionnaires extends Component
     public function exportQuestionnaires()
     {
         $filename = 'questionnaires-' . now()->format('Y-m-d') . '.csv';
-        
+
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ];
 
-        $callback = function() {
+        $callback = function () {
             $file = fopen('php://output', 'w');
-            
+
             // Add headers
             fputcsv($file, [
                 'Business Name',
@@ -51,11 +51,14 @@ class Questionnaires extends Component
                 'Business Sector',
                 'Employee Count',
                 'Years in Business',
+                'Assessor Name',
+                'Assessor Role',
+                'Migration Status',
                 'Role'
             ]);
 
             // Add data
-            AssessmentResponse::chunk(100, function($questionnaires) use ($file) {
+            AssessmentResponse::chunk(100, function ($questionnaires) use ($file) {
                 foreach ($questionnaires as $questionnaire) {
                     fputcsv($file, [
                         $questionnaire->business_name,
@@ -69,6 +72,9 @@ class Questionnaires extends Component
                         $questionnaire->business_sector,
                         $questionnaire->employee_count,
                         $questionnaire->years_in_business,
+                        $questionnaire->digital_advisor,
+                        $questionnaire->account_role,
+                        $questionnaire->migration_status,
                         $questionnaire->role
                     ]);
                 }
@@ -83,9 +89,9 @@ class Questionnaires extends Component
     public function render()
     {
         $questionnaires = AssessmentResponse::latest()->paginate(10);
-        
+
         return view('livewire.admin.questionnaires', [
             'questionnaires' => $questionnaires
         ]);
     }
-} 
+}
