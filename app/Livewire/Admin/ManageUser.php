@@ -18,6 +18,7 @@ class ManageUser extends Component
     public $is_active = true;
     public $editingUserId = null;
     public $search = '';
+    public $roleFilter = '';
     public $phone;
     public $state;
     public $email_verified_at;
@@ -169,10 +170,14 @@ class ManageUser extends Component
                         ->orWhere('email', 'like', '%' . $this->search . '%');
                 });
             })
+            ->when($this->roleFilter, function ($query) {
+                $query->where('role_id', $this->roleFilter);
+            })
             ->paginate(10);
 
         return view('livewire.admin.manage-user', [
-            'users' => $users
+            'users' => $users,
+            'roles' => $this->roles
         ]);
     }
 }
