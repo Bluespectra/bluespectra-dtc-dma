@@ -426,6 +426,8 @@ class DigitalMaturityAssessment extends Component
                 'state' => $this->personalInfo['state'],
                 'has_disability' => $this->personalInfo['has_disability'],
                 'user_id' => Auth::id(),
+                'digital_advisor' => $this->digitalAdvisorName,
+                'account_role' => $this->personalInfo['account_role'],
                 'consent_given' => $this->personalInfo['consent_given'],
 
                 // Business Information

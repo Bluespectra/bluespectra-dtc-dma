@@ -53,7 +53,6 @@ class Questionnaires extends Component
                 'Years in Business',
                 'Assessor Name',
                 'Assessor Role',
-                'Migration Status',
                 'Role'
             ]);
 
@@ -74,7 +73,6 @@ class Questionnaires extends Component
                         $questionnaire->years_in_business,
                         $questionnaire->digital_advisor,
                         $questionnaire->account_role,
-                        $questionnaire->migration_status,
                         $questionnaire->role
                     ]);
                 }
